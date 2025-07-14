@@ -1,0 +1,18 @@
+.Package json-script,package,meta data of application
+Epress package
+ -nodemon dev: this is used for allow server to run for every change
+ -ts-node dev
+ -express dep
+ -node-env dev
+ -joi dep
+ -environment variable
+
+server
+Router
+ Validation for Request
+
+
+Database
+
+NoSQL
+mongoose
