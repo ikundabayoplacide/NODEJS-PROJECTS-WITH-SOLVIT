@@ -1,30 +1,36 @@
-import * as path from 'path';
-import * as fs from 'fs';
 
-const databasePath=path.join(__dirname,'../database.json');
-const rawData=fs.readFileSync(databasePath,'utf-8');
+import mongoose from 'mongoose';
+import { config } from 'dotenv';
+config();
 
-export let Database=JSON.parse(rawData).Database;
-
-export const saveDatabase=()=>{
-    try{
-    const dataToWrite=JSON.stringify({Database},null,2);
-    fs.writeFileSync(databasePath,dataToWrite,'utf-8');
-    console.log('database saved successfully');
-    }
-    catch(error){
-        console.log('Error for saving database');
-    }
+import {ServerApiVersion} from "mongodb";
+const URL="mongodb+srv://<db_username>:<db_password>@cluster0.cxsrtqg.mongodb.net/SolvitWithPLacide?retryWrites=true&w=majority&appName=Cluster0"
+const database_url=():string=>{
+    const db_username= process.env.DB_USER_NAME as string
+    const db_password= process.env.DB_PASSWORD as string
+    return URL?.replace("<db_username>",db_username).replace("<db_password>",db_password) as string
 }
-export const loadDatabase = () => {
-    try {
-        const data = fs.readFileSync(databasePath, 'utf8');
-        const parsed = JSON.parse(data);
-        Database = parsed.Database || [];
-        console.log('Database loaded successfully');
-    } catch (error) {
-        console.error('Error loading database:', error);
-        Database = [];
+
+export async function runDatabase(){
+    try{
+        const url=database_url();
+        console.log(url);
+      const connectdb=mongoose.connect(database_url(),
+    {
+        serverApi:{
+            version:ServerApiVersion.v1,
+            strict:true,
+            deprecationErrors:true
+        }
     }
-};
-loadDatabase();
+)
+    console.log('connected sucessfully');
+} 
+catch(error){
+    console.log('Failed to connect to database',error as Error);
+}}
+runDatabase().catch(console.dir);
+
+export const generateSlug=(title:string):string=>{
+    return title.replace(/\s+/g, '-')
+}

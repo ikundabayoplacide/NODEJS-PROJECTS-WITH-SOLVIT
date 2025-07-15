@@ -1,11 +1,17 @@
 
 export type BlogType={
-    id:number;
-    name:string;
+    _id:number;
     title:string;
-    photo:string;
-    description:string
+    description:string;
+    slug:string;
+    content:string;
+    author:string;
+    isPublished:string;
+    createdAt:string;
+    updatedAt:string;
+    deletedAt:null|undefined|string
 }
-export interface GetAllBlogs{
+export interface interfaceAddBlog extends Omit<BlogType,'id'>{}
+export interface GetallBlog{
     blogs:BlogType[]
 }

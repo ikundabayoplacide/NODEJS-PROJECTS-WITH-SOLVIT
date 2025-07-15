@@ -1,42 +1,84 @@
 import {Request,Response, Router} from 'express'
-import { Database, saveDatabase } from '../utils/helper';
-import { BlogType } from '../type';
+import { BlogType, interfaceAddBlog } from '../type';
+import { ResponseService } from '../utils/response';
+import { blogModel } from '../models/blogSchema';
+import { generateSlug } from '../utils/helper';
+import mongoose from 'mongoose';
 
+ interface IRequestBlog extends Request{
+    body:interfaceAddBlog
+}
+  const createBlog= async(req:IRequestBlog,res:Response)=>{
+    try{
+        const {title,description,author,content,isPublished}=req.body;
+        const blog=new blogModel({
+            title,
+            description,
+            author,
+            content,
+            isPublished,
+            slug:generateSlug(title),
+            createdAt:new Date()
+        })
+        const savedBlog=await blog.save();
+        console.log(savedBlog);
+        ResponseService({
+            status:202,
+            data:blog,
+            res,
+            message:'Save sucessfully',
+            success:true
+        })
+    }
+    catch(error){
+        console.log('Failed to sava Blog',error);
 
-  const createBlog=(req:Request,res:Response)=>{
-    const newBlog:BlogType={
-        id:Database.length+1,
-        name:req.body.name,
-        title:req.body.title,
-        photo:req.body.photo,
-        description:req.body.description
-    };
-    Database.push(newBlog);
-    // saveDatabase();
-    res.status(200).json(newBlog);
+    }
+    
+}
+// function to get all blog
+ const allBlog= async (req:Request,res:Response)=>{
+    try {
+        const blogs=await blogModel.find();
+        ResponseService({
+            data:blogs,
+            status:200,
+            success:true,
+            res
+        })
+        
+    } catch (error) {
+        const {message,stack}=error as Error
+        res.status(500).json({message,stack});
+        
+    }
 }
 
- const allBlog=(req:Request,res:Response)=>{
-    res.status(200).json(Database);
-}
-
-const singleBlog=(req:Request,res:Response)=>{
-    const BlogId=parseInt(req.params.id);
-    const Blog=Database.find((blog:{id:number})=>blog.id===BlogId);
-    if(Blog){
+const singleBlog= async(req:Request,res:Response)=>{
+    try{
+        const blogId=req.params.id;
+   
+         const Blog=await blogModel.findById(blogId);
+        if(Blog){
         res.json({massage:'Single Blog fetched sucessfully', blog:Blog});
     }
     else{
         res.status(404).json({message:'Blog not Found'});
     }
+} catch(error){
+    console.log("Failed to get single BLog");
 }
-// to get Blog contains word
+}
+// // to get Blog contains word
 
-const BlogWithKeyword=(req:Request, res:Response)=>{
+const BlogWithKeyword= async(req:Request, res:Response)=>{
     try {
 
         const keyword=req.params.keyword;
-        const ReturnBlogWithKeyword=Database.filter((blog: { name: string; title: string; })=>blog.name.toLowerCase().includes(keyword.toLowerCase())|| blog.title.toLowerCase().includes(keyword.toLowerCase()));
+        const ReturnBlogWithKeyword=await blogModel.find({
+            $or: [{ author:{$regex:keyword,$options:'i'}},
+                  { title:{$regex:keyword,$options:'i'}}
+            ]});
           
         if(ReturnBlogWithKeyword.length>0){
             res.status(200).json({message:`All Blogs with keyword ${keyword}`,Blogs:ReturnBlogWithKeyword})
@@ -48,33 +90,58 @@ const BlogWithKeyword=(req:Request, res:Response)=>{
         
     }
 }
- const updateBlog=(req:Request,res:Response)=>{
-    const BlogId=parseInt(req.params.id);
-    const BlogUpdate=Database.findIndex((update:{id:number})=>update.id === BlogId);
+ const updateBlog=async(req:Request,res:Response)=>{
+    try{
+    const blogId=req.params.id;
+    const blogUpdate=await blogModel.findByIdAndUpdate(blogId);
 
-    if(BlogUpdate!==-1){
-        Database[BlogUpdate]={...Database[BlogUpdate],...req.body};
-       saveDatabase();
-        res.json({message:'Update Successfully',blog:Database[BlogUpdate]});
+    if(blogUpdate){
+        res.json({message:'Update Successfully',blog:blogUpdate});
     }
     else{
     res.status(404).json({message:'Blog not Found'});
     }
-
+}
+catch(error){
+    console.log('Failed to updated Blog',error as Error);
+}
 }
 
-const deleteBlog=(req:Request,res:Response)=>{
-    const BlogId=parseInt(req.params.id);
-    const DelBlog=Database.findIndex((u: { id: number})=>u.id===BlogId);
+const deleteBlog= async(req:Request,res:Response)=>{
+    try {
+         const blogId=req.params.id;
+    const delBlog=await blogModel.findByIdAndDelete(blogId);
 
-    if(DelBlog!==-1){
-        Database.splice(DelBlog,1);
-        saveDatabase(); 
-       res.json({ message: 'Blog deleted successfully', blogs: Database });
+    if(delBlog){
+       res.json({ message: 'Blog deleted successfully', blogs: delBlog });
     }
     else{
         res.status(404).json({message:'Blog not Found'});
     }
+        
+    } catch (error) {
+        console.log('Failed to delete blog',error as string);
+        
+    }
+   
 
 };
-export{createBlog,allBlog,updateBlog,deleteBlog,singleBlog,BlogWithKeyword}
+
+// const loginUser=async(req:Request,res:Response)=>{
+//     try {
+//         const userEmail=req.params.email
+//         const userPass=req.params.password
+//         const user=await Umodel.findOne({userEmail});
+//         if(!user){
+//             return res.status(400).json({message:'Invalid credentila'});
+//         }
+//       const isMatch=await bcrypt.compare(password,userPass);
+//       if(!isMatch){
+//         return res.status(400).json({message:'Password not match'});
+//       }
+        
+//     } catch (error) {
+        
+//     }
+// }
+export{createBlog,allBlog,singleBlog,deleteBlog,updateBlog,BlogWithKeyword}
