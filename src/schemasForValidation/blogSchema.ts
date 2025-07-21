@@ -4,7 +4,9 @@ export const AddBlogSchema = joi.object({
     description: joi.string().min(20).required(),
     author: joi.string().required(),
     isPublished: joi.boolean().required(),
-    content:joi.string()
+    content:joi.string(),
+    likes:joi.number()
+
 })
 export const updateBlogSchema=joi.object({
     title:joi.string().optional(),

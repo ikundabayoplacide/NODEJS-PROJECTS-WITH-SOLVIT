@@ -9,7 +9,10 @@ export type BlogType={
     isPublished:string;
     createdAt:string;
     updatedAt:string;
-    deletedAt:null|undefined|string
+    deletedAt:null|undefined|string;
+    comment:number,
+    likes:number
+
 }
 export interface interfaceAddBlog extends Omit<BlogType,'id'>{}
 export interface GetallBlog{

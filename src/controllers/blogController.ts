@@ -1,13 +1,14 @@
 import {Request,Response, Router} from 'express'
-import { BlogType, interfaceAddBlog } from '../type';
+import { BlogType, interfaceAddBlog } from '../types/blogType';
 import { ResponseService } from '../utils/response';
-import { blogModel } from '../models/blogSchema';
+import { blogModel } from '../models/blogModel';
 import { generateSlug } from '../utils/helper';
-import mongoose from 'mongoose';
+
 
  interface IRequestBlog extends Request{
     body:interfaceAddBlog
 }
+
   const createBlog= async(req:IRequestBlog,res:Response)=>{
     try{
         const {title,description,author,content,isPublished}=req.body;
@@ -70,7 +71,6 @@ const singleBlog= async(req:Request,res:Response)=>{
 }
 }
 // // to get Blog contains word
-
 const BlogWithKeyword= async(req:Request, res:Response)=>{
     try {
 
@@ -127,21 +127,36 @@ const deleteBlog= async(req:Request,res:Response)=>{
 
 };
 
-// const loginUser=async(req:Request,res:Response)=>{
-//     try {
-//         const userEmail=req.params.email
-//         const userPass=req.params.password
-//         const user=await Umodel.findOne({userEmail});
-//         if(!user){
-//             return res.status(400).json({message:'Invalid credentila'});
-//         }
-//       const isMatch=await bcrypt.compare(password,userPass);
-//       if(!isMatch){
-//         return res.status(400).json({message:'Password not match'});
-//       }
-        
-//     } catch (error) {
-        
-//     }
-// }
-export{createBlog,allBlog,singleBlog,deleteBlog,updateBlog,BlogWithKeyword}
+// function to like blog
+const likeBlog=async(req:Request, res:Response)=>{
+    try{
+        const blog_Id=req.params.id;
+        const blogToLike=await blogModel.findByIdAndUpdate(blog_Id,{$inc:{likes:1}},{new:true});
+        if(!blogToLike){
+            ResponseService({
+                status:404,
+                res,
+                message:"Blog not Found"
+            })
+        }
+        else{
+            ResponseService({
+                status:200,
+                message:"liked! thank you!",
+                res
+            })
+        }
+    }
+    catch(error){
+        const{message,stack}=error as Error
+        ResponseService({
+            res,
+            message,
+            data:stack,
+            status:500
+        })
+    }
+
+}
+
+export{createBlog,allBlog,singleBlog,deleteBlog,updateBlog,BlogWithKeyword,likeBlog}

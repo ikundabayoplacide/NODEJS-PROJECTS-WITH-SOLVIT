@@ -1,6 +1,9 @@
 
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
+import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken'
+
 config();
 
 import {ServerApiVersion} from "mongodb";
@@ -10,7 +13,21 @@ const database_url=():string=>{
     const db_password= process.env.DB_PASSWORD as string
     return URL?.replace("<db_username>",db_username).replace("<db_password>",db_password) as string
 }
+export const secretkey = process.env.JWT_SECRET || 'secret'
+export const hashPassword=async(password:string):Promise<String>=>{
+    return await bcrypt.hash(password,10);
+}
+export const isPasswordMatch=async(plainPassword:string,hashedPassword:string):Promise<boolean>=>{
+const ismatch=await bcrypt.compare(plainPassword,hashedPassword);
+return ismatch
+}
 
+export const generateToken = ({ _id, email,role }: {_id:string,email:string,role:string
+}):string => {
+    return jwt.sign({ _id, email ,role}, secretkey, {
+        expiresIn:'15min'
+    })
+}
 export async function runDatabase(){
     try{
         const url=database_url();
