@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken'
 
 config();
 
+    
+
 import {ServerApiVersion} from "mongodb";
 const URL="mongodb+srv://<db_username>:<db_password>@cluster0.cxsrtqg.mongodb.net/SolvitWithPLacide?retryWrites=true&w=majority&appName=Cluster0"
 const database_url=():string=>{
