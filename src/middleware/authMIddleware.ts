@@ -32,10 +32,10 @@ export const AuthMiddleware=(req:RequestedUser,res:Response,next:NextFunction)=>
     }
     catch(error){
         const {stack}=error as Error
-        ResponseService({
+       return ResponseService({
             res,
             data:stack,
-            message:"Please make login",
+            message:"Invalid or expired token",
             status:401
         })
     }

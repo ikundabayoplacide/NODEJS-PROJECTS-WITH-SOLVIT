@@ -10,7 +10,7 @@ import uploadImage from "../controllers/uploadController";
 
 const UserRoutes=Router();
 const Controller= new userController;
-UserRoutes.post('/createUser',ValidationMiddleware({type:"body",schema:userCreateValidations}),Controller.createUser);
+UserRoutes.post('/createUser',Controller.createUser);
 UserRoutes.get('/getUsers',AuthMiddleware,checkRoleMiddleware,Controller.getAllUsers)
 UserRoutes.post('/userLogin',ValidationMiddleware({
     type:"body",

@@ -20,7 +20,7 @@ const addComment = async (req: IRequestComment, res: Response,nex:NextFunction) 
 
         const TakeBlog = await blogModel.findByIdAndUpdate(blogId);
         if (!TakeBlog) {
-            ResponseService({
+            return ResponseService({
                 status: 403,
                 res,
                 message: "Blog not found!"
@@ -33,7 +33,7 @@ const addComment = async (req: IRequestComment, res: Response,nex:NextFunction) 
                 blog: blogId,
                 user: userId,
             });
-            ResponseService({
+           return ResponseService({
                 status: 200,
                 message: "commented",
                 res,
@@ -45,7 +45,7 @@ const addComment = async (req: IRequestComment, res: Response,nex:NextFunction) 
 
     } catch (error) {
         const { message, stack } = error as Error
-        ResponseService({
+       return ResponseService({
             res,
             data: stack,
             message,
@@ -58,14 +58,14 @@ const getAllComments=async(req:Request,res:Response)=>{
     try {
     const getComment= await commentModel.find();
     if(getComment.length<=0){
-        ResponseService({
+       return ResponseService({
             res,
             message:"There is no comment on this blog. thank you",
             status:403,
         })
     }
        else{
-            ResponseService({
+           return ResponseService({
                 res,
                 status:200,
                 data:getComment
@@ -73,7 +73,7 @@ const getAllComments=async(req:Request,res:Response)=>{
         }
     } catch (error) {
         const{message,stack}=error as Error
-        ResponseService({
+        return ResponseService({
             res,
             message,
             data:stack,
@@ -87,21 +87,21 @@ const deleteComment=async(req:Request,res:Response)=>{
         const commentId=req.params.commentId
         const Comment=await commentModel.findById(commentId);
         if(!Comment){
-            ResponseService({
+           return ResponseService({
                 res,
                 message:"no comment to delete",
                 status:403
             })
         } else{
             await commentModel.findByIdAndDelete(commentId);
-            ResponseService({
+           return ResponseService({
             res,
             message:"Deleted Sucessfully"
             })}
             await blogModel.findByIdAndUpdate(Comment?.blog,{$inc:{comment:-1}})
     } catch (error) {
         const {message,stack}=error as Error
-        ResponseService({
+      return  ResponseService({
             res,
             message,
             data:stack
@@ -117,13 +117,13 @@ const updateComment=async(req:IRequestComment, res:Response)=>{
 
         const updateComment=await commentModel.findByIdAndUpdate(commentId,updateData,{new:true});
         if(!updateComment){
-            ResponseService({
+          return  ResponseService({
                 res,
                 status:403,
                 message:'No Comment to update.'
             })
         } else
-          ResponseService({
+         return ResponseService({
                 res,
                 status:200,
                 message:'Update successfully',
@@ -132,7 +132,7 @@ const updateComment=async(req:IRequestComment, res:Response)=>{
     
     } catch (error) {
         const {message,stack} =error as Error
-        ResponseService({
+       return ResponseService({
             res,
             message,
             status:500,

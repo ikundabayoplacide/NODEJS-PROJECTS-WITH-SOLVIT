@@ -41,7 +41,7 @@ export const checkRoleMiddleware= async (req:ChechRole,res:Response,next:NextFun
 
  catch (error) {
     const {message,stack}=error as Error
-    ResponseService({
+    return ResponseService({
         res,
         data:stack,
         message:"Invalid or expired token",

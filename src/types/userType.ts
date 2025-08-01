@@ -4,6 +4,7 @@ import { Request, Response } from "express";
  name:string,
  email:string,
  role:'admin'|'user',
+ phoneNumber?:string,
  gender:'male'|'female'|'others',
  password:string
 }

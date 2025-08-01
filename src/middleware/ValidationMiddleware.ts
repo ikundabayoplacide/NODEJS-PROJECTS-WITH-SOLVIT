@@ -13,7 +13,7 @@ export const ValidationMiddleware = <T>({ type, schema ,refType}: ValidateOption
       
         const { error } = schema.validate(validationQueries)
         if (error) {
-            ResponseService({
+          return  ResponseService({
                 data: error,
                 status: 400,
                 success: false,

@@ -23,7 +23,7 @@ import { generateSlug } from '../utils/helper';
         })
         const savedBlog=await blog.save();
         console.log(savedBlog);
-        ResponseService({
+       return ResponseService({
             status:202,
             data:blog,
             res,
@@ -41,7 +41,7 @@ import { generateSlug } from '../utils/helper';
  const allBlog= async (req:Request,res:Response)=>{
     try {
         const blogs=await blogModel.find();
-        ResponseService({
+     return ResponseService({
             data:blogs,
             status:200,
             success:true,
@@ -133,14 +133,14 @@ const likeBlog=async(req:Request, res:Response)=>{
         const blog_Id=req.params.id;
         const blogToLike=await blogModel.findByIdAndUpdate(blog_Id,{$inc:{likes:1}},{new:true});
         if(!blogToLike){
-            ResponseService({
+            return ResponseService({
                 status:404,
                 res,
                 message:"Blog not Found"
             })
         }
         else{
-            ResponseService({
+           return ResponseService({
                 status:200,
                 message:"liked! thank you!",
                 res
@@ -149,7 +149,7 @@ const likeBlog=async(req:Request, res:Response)=>{
     }
     catch(error){
         const{message,stack}=error as Error
-        ResponseService({
+       return ResponseService({
             res,
             message,
             data:stack,

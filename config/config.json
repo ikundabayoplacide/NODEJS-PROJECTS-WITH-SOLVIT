@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "placide",
+    "password": "postgres",
+    "database": "blogmanagement",
+    "host": "127.0.0.1",
+    "port":5432,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "placide",
+    "password": "postgres",
+    "database": "blogmanagement_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "placide",
+    "password": "postgres",
+    "database": "blogmanagement_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
