@@ -6,10 +6,10 @@
       "title": "title number 100",
       "photo": "none on 100",
       "author":"Node",
-      "isPublished":false,
+      "is_published":false,
       "description": " view description of 100",
-      "createdAt":"",
-      "deletedAt":null
+      "created_at":"",
+      "deleted_at":null
     }
   ]
 }

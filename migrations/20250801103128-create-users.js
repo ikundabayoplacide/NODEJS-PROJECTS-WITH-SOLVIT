@@ -1,6 +1,6 @@
 'use strict';
 
-const { DeletedAt } = require('sequelize-typescript');
+const { deleted_at } = require('sequelize-typescript');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -42,17 +42,17 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: false
     },
-    createdAt: {
+    created_at: {
       type: Sequelize.DATE,
       allowNull: false,
       defaultValue: Sequelize.NOW
     },
-    updatedAt: {
+    updated_at: {
       type: Sequelize.DATE,
       allowNull: false,
       defaultValue: Sequelize.NOW
     },
-    DeletedAt: {
+    deleted_at: {
       type: Sequelize.DATE,
       allowNull: true,
       defaultValue: null

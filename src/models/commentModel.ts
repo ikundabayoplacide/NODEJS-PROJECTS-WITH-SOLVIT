@@ -1,18 +1,59 @@
-import mongoose, { model,Schema } from "mongoose";
-import { commentType } from "../types/commentType";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/database";
+import { User } from "./userModel";
+import { Blog } from "./blogModel";
 
- export const commentSchema= new Schema<commentType>({
-    comment:String,
-    title:String,
-    blog:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'blogs'
-    },
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'users'
-    },
-},{
-    timestamps:true
-})
-export const commentModel=model<commentType>('comments',commentSchema);
+interface CommentAttributes {
+  id: number;
+  comment: string;
+  userId: number;
+  blogId: number;
+}
+
+class Comment extends Model<CommentAttributes> implements CommentAttributes {
+  public id!: number;
+  public comment!: string;
+  public userId!: number;
+  public blogId!: number;
+
+  static initModel() {
+    Comment.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
+        comment: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        userId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          field: 'user_id'
+        },
+        blogId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          field: 'blog_id'
+        }
+      },
+      {
+        sequelize,
+        modelName: 'Comment',
+        tableName: 'comments',
+        timestamps: true,
+        underscored: true
+      }
+    );
+  }
+
+  static associate() {
+    Comment.belongsTo(User, { foreignKey: 'userId' });
+    Comment.belongsTo(Blog, { foreignKey: 'blogId' });
+  }
+}
+
+
+export { Comment };

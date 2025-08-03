@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { createUserInterface, userControllerImplementation, userLoginInterface } from "../types/userType";
-import User from "../models/userModel";
+import {User} from "../models/userModel";
 import { ResponseService } from "../utils/response";
 import { generateToken, hashPassword, isPasswordMatch } from "../utils/helper";
 import { RequestedUser } from "../middleware/authMIddleware";
@@ -51,7 +51,7 @@ export class userController implements userControllerImplementation{
         try {
             // const _id=req?.user?._id as string
             const user=await User.findAll({
-                where:{deletedAt:null}
+                where:{deleted_at:null}
             })
             return ResponseService({
                 res,
@@ -76,7 +76,7 @@ export class userController implements userControllerImplementation{
             try {
                 const{email,password}=req.body
                 const user=await User.findOne({
-                    where:{email,deletedAt:null}
+                    where:{email,deleted_at:null}
                 })
                 if(!user){
                    return ResponseService({

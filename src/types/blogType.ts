@@ -6,10 +6,10 @@ export type BlogType={
     slug:string;
     content:string;
     author:string;
-    isPublished:string;
-    createdAt:string;
-    updatedAt:string;
-    deletedAt:null|undefined|string;
+    is_published:string;
+    created_at:string;
+    updated_at:string;
+    deleted_at:null|undefined|string;
     comment:number,
     likes:number
 

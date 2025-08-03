@@ -4,6 +4,9 @@ import { GenderEnum,roleNum } from "../schemasForValidation/userSchema.";
 
 
 class User extends Model {
+    static associate() {
+      throw new Error('Method not implemented.');
+    }
     public id!: number;
     public name!: string;
     public email!: string;
@@ -12,9 +15,9 @@ class User extends Model {
     public phoneNumber!: string | null;
     public password!: string;
     public isActive!: boolean;
-    public createdAt!: Date;
-    public updatedAt!: Date;    
-    public deletedAt!: Date | null;
+    public created_at!: Date;
+    public updated_at!: Date;    
+    public deleted_at!: Date | null;
 }
 
 User.init(
@@ -57,17 +60,17 @@ User.init(
             allowNull: true,
             unique: true,
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
         },
-        updatedAt: {
+        updated_at: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
         },
-        deletedAt: {
+        deleted_at: {
             type: DataTypes.DATE,
             allowNull: true,
             defaultValue: null,
@@ -79,9 +82,9 @@ User.init(
         tableName: "users",
         timestamps: true,
         paranoid: true, // Enables soft delete
-        createdAt: 'createdAt',
-        updatedAt: 'updatedAt',
-        deletedAt: 'deletedAt',
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+        deletedAt: 'deleted_at',
     }
 );
-export default User;
+export {User};
