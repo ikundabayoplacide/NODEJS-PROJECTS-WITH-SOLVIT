@@ -2,11 +2,11 @@ import express from 'express';
 import { config } from 'dotenv';
 import { routers } from './src/routes';
 import { connectDatabase } from './src/config/database';
-import { Blog } from './src/models/blogModel';
-import { User } from './src/models/userModel';
 import { initializeModels } from './src/models/initializeModels';
+import helmet from 'helmet';
 
 const app = express()
+app.use(helmet());
 config();
 app.use(express.json());
 app.use(routers)
