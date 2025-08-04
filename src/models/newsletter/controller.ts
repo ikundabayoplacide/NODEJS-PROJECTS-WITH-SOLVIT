@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import { ResponseService } from "../../utils/response";
 import { Newsletter } from "./model";
+import { triggerNewLetterNotification } from "../../events/AppEvents";
 
 
 export const createNewsLetter = async (req: Request, res: Response) => {
-    const { name, description } = req.body;
+    const { name, description, email } = req.body;
     try {
-        const newsletter = await Newsletter.create({ name, description });
+        const newsletter = await Newsletter.create({ name, description, email });
+        await triggerNewLetterNotification(newsletter);
         return ResponseService({
             res,
             status: 201,
@@ -14,6 +16,7 @@ export const createNewsLetter = async (req: Request, res: Response) => {
             success: true,
             data: newsletter
         });
+
     } catch (error) {
         console.error('Error creating newsletter:', error);
         return ResponseService({
@@ -23,6 +26,7 @@ export const createNewsLetter = async (req: Request, res: Response) => {
             success: false
         });
     }
+    
 }
 
 export const getAllNewsletters = async (req: Request, res: Response) => {

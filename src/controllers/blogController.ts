@@ -3,7 +3,7 @@ import { ResponseService } from "../utils/response";
 import { generateSlug } from "../utils/helper";
 import { Op } from "sequelize";
 import { Blog } from "../models/blogModel";
-import { triggerBlogNotif } from "../events/blogEvents";
+import { triggerBlogNotif } from "../events/AppEvents";
 
 
   // Create a new blog
@@ -20,7 +20,7 @@ import { triggerBlogNotif } from "../events/blogEvents";
           slug: generateSlug(title),
           comment_count: 0
       });
-      triggerBlogNotif(blog);
+    await triggerBlogNotif(blog);
 
       ResponseService({
         status: 201, 

@@ -1,22 +1,25 @@
 import nodemailer from 'nodemailer';
+import { email } from 'zod';
+import { ResponseService } from '../../utils/response';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+     host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth:{
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
 });
 
-export const sendConfirmationMail=async(email: string, newsletterName: string, p0: string, name: any) => {
+export const sendConfirmationMail=async(email: string, news: string,content:string) => {
     const mailOptions = {
-        from:`updates <${process.env.EMAIL_USER}>`,
+        from:`Updates <${process.env.EMAIL_USER}>`,
         to:email,
-        subject:`Subscription confirmed!${newsletterName}`,
-        html:`<h2> Thank you!</h2>
-        <p> You have successfully subscribed to our newsletter.</p>`
+        subject:`New info! ${news}`,
+        html:`<p> ${content}.</p>`
     };
-
     try {
        const info= await transporter.sendMail(mailOptions);
          console.log('Email sent:', info.messageId);
@@ -24,4 +27,38 @@ export const sendConfirmationMail=async(email: string, newsletterName: string, p
     } catch (error) {
         console.error('Error sending newsletter:', error);
     }
+}
+
+// this is for subscribe
+export const subscribeEmails=async(email:string,newsletterName:string)=>{
+  const mailOptions={
+    from:process.env.EMAIL_USER,
+    to:email,
+    subject:`You've been SUbscribed ${newsletterName}`,
+    html:`<h4> Subscribed confirmed, Now you can see our updates on time! </h4>`,
+  };
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Email made subscription",email);
+    
+  } catch (error) {
+  console.log('Failed to subscribe',error);
+  }}
+
+// this is for unsubscribe
+export const unsubscribedEmail=async(email:string,newsletterName:string)=>{
+  const mailOptions={
+    from:process.env.EMAIL_USER,
+    to:email,
+    subject:`You have unsubscribed ${newsletterName}`,
+    html:` <h3> You Unsubscribed on ${newsletterName} </h3>`
+  };
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Unsubscription confirmation sent to ${email}`)
+    
+  } catch (error) {
+    console.log('Failed to unsubscribe',error);
+    
+  }
 }
