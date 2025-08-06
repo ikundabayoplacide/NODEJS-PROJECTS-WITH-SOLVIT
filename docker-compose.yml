@@ -1,0 +1,103 @@
+# services:
+#   postgres:
+#     image: postgres:15
+#     env_file: .env
+#     environment:
+#       POSTGRES_USER: placide
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_DB: blogmanagement
+#     volumes:
+#       - pg_data:/var/lib/postgresql/data
+#     ports:
+#       - "5433:5432"
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U ${DEV_USERNAME:-postgres}"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 5
+
+#   redis:
+#     image: redis:7
+#     ports:
+#       - "6380:6379"
+#     volumes:
+#       - redis_data:/data
+
+#   api:
+#     build:
+#       context: .
+#       dockerfile: docker/APIs/dockerfile  
+#     depends_on:
+#       postgres:
+#         condition: service_healthy
+#       redis:
+#         condition: service_started
+#     ports:
+#       - "3001:3000"
+#     environment:
+#       - NODE_ENV=${NODE_ENV:-development}
+#       - DB_HOST=postgres
+#       - DB_PORT=${DEV_PORT:-5432}
+#       - DB_USER=${DEV_USERNAME:-postgres}
+#       - DB_PASSWORD=${DEV_PASSWORD:-postgres}
+#       - DB_NAME=${DEV_DATABASE:-blogmanagement}
+#       - REDIS_HOST=${REDIS_HOST:-redis}
+#     volumes:
+#       - ./src:/app/src
+#     restart: unless-stopped
+
+#   worker:
+#     build:
+#       context: .
+#       dockerfile: docker/workers/dockerfile  
+#     depends_on:
+#       - redis
+#       - postgres
+#     environment:
+#       - NODE_ENV=${NODE_ENV:-development}
+#       - DB_HOST=postgres
+#       - DB_PORT=${DEV_PORT:-5432}
+#       - DB_USER=${DEV_USERNAME:-postgres}
+#       - DB_PASSWORD=${DEV_PASSWORD:-postgres}
+#       - DB_NAME=${DEV_DATABASE:-blogmanagement}
+#       - REDIS_HOST=${REDIS_HOST:-redis}
+#     volumes:
+#       - ./src:/app/src
+#     restart: unless-stopped
+
+# volumes:
+#   pg_data:
+#   redis_data:
+
+services:
+  app:
+    build: .
+    container_name: blog-management
+    ports:
+      - "5500:5500"
+    volumes:
+      - .:/src/app
+      - /src/app/node_modules
+    
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    # command: sh -c "npm run build && node dist/index.js"
+
+  postgres:
+    image: postgres:15
+    container_name: blog-db
+    restart: always
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: ${DEV_USERNAME}
+      POSTGRES_PASSWORD: ${DEV_PASSWORD}
+      POSTGRES_HOST: ${DEV_HOST}
+      POSTGRES_DB: ${DEV_DATABASE}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

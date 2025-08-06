@@ -5,6 +5,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
     "@types/streamifier": "^0.1.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "dotenv": "^17.2.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
@@ -16,18 +18,23 @@
   "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src --exec ts-node server.ts"
+    "dev": "nodemon --watch src --exec ts-node server.ts",
+    "build": "tsc",
+    "worker": "ts-node src/workers/notification/worker.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/bull": "^3.15.8",
     "@types/nodemailer": "^6.4.17",
     "bcryptjs": "^3.0.2",
+    "bull": "^3.29.3",
     "cloudinary": "^2.7.0",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
+    "ioredis": "^5.7.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.3",
@@ -39,6 +46,8 @@
     "sequelize": "^6.37.7",
     "sequelize-typescript": "^2.1.6",
     "streamifier": "^0.1.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.0.5"
   }
 }
